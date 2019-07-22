@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
@@ -36,7 +37,11 @@ public class ConverterView extends Application {
 
 	private Button buttonConvert = new Button("Convert");
 
-	private ObservableList<String> oListMarkupChoices = FXCollections.observableArrayList("Markdown", "BBCode", "HTML");
+	private VBox vBoxCenterSubControls = new VBox(20);
+	private RadioButton radioCullTags = new RadioButton("Remove incompatible tags");
+	private RadioButton radioForceUl = new RadioButton("Treat \"_\" as an underline");
+
+	private ObservableList<String> oListMarkupChoices = FXCollections.observableArrayList("Markdown", "BBCode", "HTML5");
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -86,9 +91,17 @@ public class ConverterView extends Application {
 		vBoxOutput.setAlignment(Pos.CENTER);
 
 		// Center Controls -----------------------------------------------------
+		radioForceUl.setMnemonicParsing(false); // Allows for the "_" character
+		radioForceUl.setSelected(true);
+		radioCullTags.setWrapText(true);
+		vBoxCenterSubControls.getChildren().add(radioCullTags);
+		vBoxCenterSubControls.getChildren().add(radioForceUl);
+		vBoxCenterSubControls.setAlignment(Pos.CENTER_LEFT);
+
+		vBoxCenterControls.getChildren().add(vBoxCenterSubControls);
 		vBoxCenterControls.getChildren().add(buttonConvert);
 		vBoxCenterControls.setAlignment(Pos.BOTTOM_CENTER);
-		vBoxCenterControls.setMinWidth(200);
+		vBoxCenterControls.setMinWidth(225);
 
 		// Master Layout -------------------------------------------------------
 		hBoxMaster.getChildren().add(vBoxInput);
@@ -120,7 +133,7 @@ public class ConverterView extends Application {
 
 			try {
 				String convertedOutput = controller.convertMarkup(textAreaInput.getText(), comboInput.getValue(),
-						comboOutput.getValue());
+						comboOutput.getValue(), radioForceUl.isSelected(), radioCullTags.isSelected());
 
 				textAreaOutput.setText(convertedOutput);
 			} catch (IllegalArgumentException a) {
