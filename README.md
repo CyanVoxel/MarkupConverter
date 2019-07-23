@@ -20,7 +20,7 @@ A simple program that allows you to convert Markup text to/from the following la
 
 ### Installation
 
-- Download and run [markupconverter.jar](builds/markupconverter.jar) in the builds folder, OR
+- Download and run the newest .jar provided in the [Releases Tab](https://github.com/CyanVoxel/MarkupConverter/releases), OR
 - Build and run the program yourself if you have the [JDK](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) with JavaFX installed
 
 ## Usage
