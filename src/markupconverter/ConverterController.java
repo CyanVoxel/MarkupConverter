@@ -1,8 +1,24 @@
+/**
+ * A Controller class that handles text conversion and sends it back
+ * to the ConverterView class to be displayed.
+ * @author Travis Abendshien (https://github.com/CyanVoxel)
+ */
+
+ // @TODO Include support for escaped characters
+ // @TODO Include Color and Link tags support
+ // @TODO Include list support, and possibly tables
+ // @TODO Expand on the different flavors of markdown (ex. GitHub, Discord, Reddit)
+
 package markupconverter;
 
 public class ConverterController {
 
-	public String convertMarkup(String input, String inputType, String outputType, boolean forceUl, boolean cullTags) {
+	// // Used to temporarily hold link info
+	// private String tempUrl = new String();
+	// private String tempUrlText = new String();
+
+	public String convertMarkup(String input, String inputType, String outputType, boolean forceUl, boolean cullTags,
+			boolean incStrongEm) {
 		String output = new String();
 
 		// Converts the text to a common style based on the inputType
@@ -13,7 +29,7 @@ public class ConverterController {
 			output = input;
 			break;
 		case "HTML5":
-			output = convertHtml5ToCommon(input, forceUl, cullTags);
+			output = convertHtml5ToCommon(input, forceUl, cullTags, incStrongEm);
 			break;
 		case "BBCode":
 			output = convertBbcodeToCommon(input, forceUl, cullTags);
@@ -89,6 +105,10 @@ public class ConverterController {
 		output = output.replace("[code]", "`");
 		output = output.replace("[/code]", "`");
 
+		// // Link -------------------------------------------
+		// output = output.replace("[url]", "<url>");
+		// output = output.replace("[/url]", "</url>");
+
 		return output;
 	}
 
@@ -99,31 +119,33 @@ public class ConverterController {
 	 * @return A string formatted to the common internal markup style.
 	 *
 	 */
-	private String convertHtml5ToCommon(String input, boolean forceUl, boolean cullTags) {
+	private String convertHtml5ToCommon(String input, boolean forceUl, boolean cullTags, boolean incStrongEm) {
 		String output = input;
 
 		// Bold -------------------------------------------
 		output = output.replace("<b>", "**");
 		output = output.replace("</b>", "**");
-		// output = output.replace("<strong>", "**");
-		// output = output.replace("</strong>", "**");
+		if (incStrongEm) {
+			output = output.replace("<strong>", "**");
+			output = output.replace("</strong>", "**");
+		}
+
 		if (!forceUl) {
 			output = output.replace("<b>", "__");
 			output = output.replace("</b>", "__");
-			// output = output.replace("<strong>", "__");
-			// output = output.replace("</strong>", "__");
 		}
 
 		// Italic -----------------------------------------
 		output = output.replace("<i>", "*");
 		output = output.replace("</i>", "*");
-		// output = output.replace("<em>", "*");
-		// output = output.replace("</em>", "*");
+		if (incStrongEm) {
+			output = output.replace("<em>", "*");
+			output = output.replace("</em>", "*");
+		}
+
 		if (!forceUl) {
 			output = output.replace("<i>", "_");
 			output = output.replace("</i>", "_");
-			// output = output.replace("<em>", "_");
-			// output = output.replace("</em>", "_");
 		}
 
 		// Underline --------------------------------------
@@ -146,6 +168,8 @@ public class ConverterController {
 		// Code -------------------------------------------
 		output = output.replace("<code>", "`");
 		output = output.replace("</code>", "`");
+
+		// Link -------------------------------------------
 
 		return output;
 
@@ -229,6 +253,14 @@ public class ConverterController {
 			}
 		}
 
+		// // Link -------------------------------------------
+		// while (output.indexOf("<url>") >= 0) {
+		// 	output = output.replaceFirst("<url>", "[url]");
+		// 	if (output.indexOf("</url>") >= 0) {
+		// 		output = output.replaceFirst("</url>", "[/url]");
+		// 	}
+		// }
+
 		return output;
 
 	} // convertCommonToBbcode()
@@ -311,8 +343,16 @@ public class ConverterController {
 			}
 		}
 
+		// // Link -------------------------------------------
+		// while (output.indexOf("<url>") >= 0) {
+		// 	output = output.replaceFirst("<url>", "<a href=\"" + tempUrl + "\">" + tempUrlText);
+		// 	if (output.indexOf("</url>") >= 0) {
+		// 		output = output.replaceFirst("</url>", "</a>");
+		// 	}
+		// }
+
 		return output;
 
-	} //convertCommonToHtml5()
+	} // convertCommonToHtml5()
 
 } // ConverterController class

@@ -10,6 +10,8 @@ A simple program that allows you to convert Markup text to/from the following la
 - HTML
 - BBCode
 
+*Note:* Currently only more basic common features between languages are supported (bold, italics, underline, strike-through, code/mono, block quotes) are supported. Additional features such as colors, links, and lists may arrive in future updates.
+
 ## Getting Started
 
 ### Dependencies

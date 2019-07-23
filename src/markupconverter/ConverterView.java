@@ -1,3 +1,8 @@
+/**
+ * A View class that manages the GUI of the application and responds to input.
+ * @author Travis Abendshien (https://github.com/CyanVoxel)
+ */
+
 package markupconverter;
 
 import javafx.collections.*;
@@ -35,13 +40,18 @@ public class ConverterView extends Application {
 	private TextArea textAreaOutput = new TextArea();
 	private ComboBox<String> comboOutput = new ComboBox<String>();
 
-	private Button buttonConvert = new Button("Convert");
+	private Button buttonConvert = new Button("Convert!");
 
-	private VBox vBoxCenterSubControls = new VBox(20);
+	private VBox vBoxCenterSubControls = new VBox(5);
+	private Label labelGeneralOptions = new Label("General Options");
 	private RadioButton radioCullTags = new RadioButton("Remove incompatible tags");
+	private Label labelMarkdownOptions = new Label("Markdown Options");
 	private RadioButton radioForceUl = new RadioButton("Treat \"_\" as an underline");
+	private Label labelHtml5Options = new Label("HTML5 Options");
+	private RadioButton radioIncludeStrongEm = new RadioButton("Include <strong> and <em>");
 
-	private ObservableList<String> oListMarkupChoices = FXCollections.observableArrayList("Markdown", "BBCode", "HTML5");
+	private ObservableList<String> oListMarkupChoices = FXCollections.observableArrayList("Markdown", "BBCode",
+			"HTML5");
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -66,7 +76,7 @@ public class ConverterView extends Application {
 		textAreaOutput.setPrefWidth(2000);
 		// textAreaOutput.setPadding(new Insets(20, 20, 20, 20));
 
-		buttonConvert.setMinWidth(100);
+		buttonConvert.setMinWidth(150);
 		ConvertHandler convertHandler = new ConvertHandler();
 		buttonConvert.setOnAction(convertHandler);
 
@@ -82,7 +92,7 @@ public class ConverterView extends Application {
 
 		// Output Text Area ----------------------------------------------------
 		comboOutput.setItems(oListMarkupChoices);
-		comboOutput.setValue("BBCode");
+		comboOutput.setValue("HTML5");
 		comboOutput.setMinWidth(200);
 		textAreaOutput.setPromptText("Output text");
 		textAreaOutput.setEditable(false);
@@ -91,11 +101,23 @@ public class ConverterView extends Application {
 		vBoxOutput.setAlignment(Pos.CENTER);
 
 		// Center Controls -----------------------------------------------------
+		labelMarkdownOptions.setStyle("-fx-font: 12 System;");
+		labelMarkdownOptions.setPadding(new Insets(20, 0, 0, 0));
+		labelGeneralOptions.setStyle("-fx-font: 12 System;");
+		labelGeneralOptions.setPadding(new Insets(20, 0, 0, 0));
+		labelHtml5Options.setStyle("-fx-font: 12 System;");
+		labelHtml5Options.setPadding(new Insets(20, 0, 0, 0));
 		radioForceUl.setMnemonicParsing(false); // Allows for the "_" character
 		radioForceUl.setSelected(true);
 		radioCullTags.setWrapText(true);
+		radioIncludeStrongEm.setSelected(true);
+
+		vBoxCenterSubControls.getChildren().add(labelGeneralOptions);
 		vBoxCenterSubControls.getChildren().add(radioCullTags);
+		vBoxCenterSubControls.getChildren().add(labelMarkdownOptions);
 		vBoxCenterSubControls.getChildren().add(radioForceUl);
+		vBoxCenterSubControls.getChildren().add(labelHtml5Options);
+		vBoxCenterSubControls.getChildren().add(radioIncludeStrongEm);
 		vBoxCenterSubControls.setAlignment(Pos.CENTER_LEFT);
 
 		vBoxCenterControls.getChildren().add(vBoxCenterSubControls);
@@ -133,7 +155,8 @@ public class ConverterView extends Application {
 
 			try {
 				String convertedOutput = controller.convertMarkup(textAreaInput.getText(), comboInput.getValue(),
-						comboOutput.getValue(), radioForceUl.isSelected(), radioCullTags.isSelected());
+						comboOutput.getValue(), radioForceUl.isSelected(), radioCullTags.isSelected(),
+						radioIncludeStrongEm.isSelected());
 
 				textAreaOutput.setText(convertedOutput);
 			} catch (IllegalArgumentException a) {
